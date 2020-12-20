@@ -1,0 +1,24 @@
+site_name: MadLisp
+site_description: "Lisp interpreter for PHP"
+site_author: Pekka Laiho
+copyright: "Copyright &copy; 2020 Pekka Laiho"
+extra_css: ['extra.css']
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Usage: usage.md
+  - Init file: init-file.md
+  - Basic types: basic-types.md
+  - Functions: functions.md
+  - Environments: environments.md
+  - Control flow: control-flow.md
+  - Quoting: quoting.md
+  - Macros: macros.md
+  - Exceptions: exceptions.md
+  - Loading files: loading-files.md
+  - Built-in functions: built-in-functions.md
+  - Constants: constants.md
+  - Reflection: reflection.md
+  - Extending: extending.md
+theme:
+  name: readthedocs

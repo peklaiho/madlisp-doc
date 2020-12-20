@@ -1,0 +1,12 @@
+table {
+    margin-bottom: 20px;
+}
+
+td code {
+    border: none !important;
+    padding: 0 !important;
+}
+
+td {
+    padding: 5px;
+}
