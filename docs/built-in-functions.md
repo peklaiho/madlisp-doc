@@ -16,6 +16,7 @@ printr | `(printr "hello world")` | `"hello world"` | Print expression on the sc
 prints | `(prints "hello world")` | `"\"hello world\""` | Print expression to string in readable format.
 read   | `(read "(+ 1 2 3)")` | `(+ 1 2 3)` | Read a string as code and return the expression.
 sleep  | `(sleep 2000)` | `null` | Sleep for the given period given in milliseconds using [usleep](https://www.php.net/manual/en/function.usleep). Disabled in safe-mode.
+system | `(system "ls")` | `[0 "file1.txt\nfile2.txt\n"]` | Execute a system command and return a vector where the first item is status code and second is the output of the command as a string.
 throw  | `(throw "invalid value")` | `error: "invalid value"` | Throw an exception. The given value is passed to catch. See the section Exceptions.
 
 ## Collection functions
@@ -32,12 +33,12 @@ vtol    | `(vtol [1 2 3])` | `(1 2 3)` | Convert vector to list.
 empty?  | `(empty? [])` | `true` | Return true if collection is empty, otherwise false.
 get     | `(get [1 2 3] 0)` | `1` | Return the nth element from a sequence, or the corresponding value for the given key from a hash-map.
 len     | `(len [1 2 3])` | `3` | Return the number of elements in a collection.
-first   | `(first [1 2 3 4])` | `1` | Return the first element of a sequence.
+first   | `(first [1 2 3 4])` | `1` | Return the first element of a sequence. Also usable as `car`.
 second  | `(second [1 2 3 4])` | `2` | Return the second element of a sequence.
 penult  | `(penult [1 2 3 4])` | `3` | Return the second-last element of a sequence.
 last    | `(last [1 2 3 4])` | `4` | Return the last element of a sequence.
 head    | `(head [1 2 3 4])` | `[1 2 3]` | Return new sequence which contains all elements except the last.
-tail    | `(tail [1 2 3 4])` | `[2 3 4]` | Return new sequence which contains all elements except the first.
+tail    | `(tail [1 2 3 4])` | `[2 3 4]` | Return new sequence which contains all elements except the first. Also usable as `cdr`.
 slice   | `(slice [1 2 3 4 5] 1 3)` | `[2 3 4]` | Return a slice of the sequence using offset and length. Uses [array_slice](https://www.php.net/manual/en/function.array-slice.php).
 apply   | `(apply + 1 2 [3 4])` | `10` | Call the first argument using a sequence as argument list. Intervening arguments are prepended to the list.
 chunk   | `(chunk [1 2 3 4 5] 2)` | `[[1 2] [3 4] [5]]` | Divide a sequence to multiple sequences with specified length using [array_chunk](https://www.php.net/manual/en/function.array-chunk.php).
@@ -65,14 +66,23 @@ usort   | `(usort (fn (a b) (if (< a b) 0 1)) [3 1 5 4 2])` | `[1 2 3 4 5]` | So
 
 Name    | Example | Example result | Description
 ------- | ------- | -------------- | -----------
-`=`     | `(= 1 "1")` | `true` | Compare arguments for equality using the `==` operator in PHP.
-`==`    | `(== 1 "1")` | `false` | Compare arguments for strict equality using the `===` operator in PHP.
-`!=`    | `(!= 1 "1")` | `false` | Compare arguments for not-equality using the `!=` operator in PHP.
-`!==`   | `(!== 1 "1")` | `true` | Compare arguments for strict not-equality using the `!==` operator in PHP.
-`<`     | `(< 1 2)` | `true` | Return true if first argument is less than second.
-`<=`    | `(<= 1 2)` | `true` | Return true if first argument is less or equal to second.
-`>`     | `(> 1 2)` | `false` | Return true if first argument is greater than second.
-`>=`    | `(>= 1 2)` | `false` | Return true if first argument is greater or equal to second.
+=     | `(= 1 "1")` | `true` | Compare arguments for equality using the `==` operator in PHP.
+==    | `(== 1 "1")` | `false` | Compare arguments for strict equality using the `===` operator in PHP.
+!=    | `(!= 1 "1")` | `false` | Compare arguments for not-equality using the `!=` operator in PHP.
+!==   | `(!== 1 "1")` | `true` | Compare arguments for strict not-equality using the `!==` operator in PHP.
+&lt;  | `(< 1 2)` | `true` | Return true if first argument is less than second.
+&lt;= | `(<= 1 2)` | `true` | Return true if first argument is less or equal to second.
+&gt;  | `(> 1 2)` | `false` | Return true if first argument is greater than second.
+&gt;= | `(>= 1 2)` | `false` | Return true if first argument is greater or equal to second.
+
+## Crypto and hash functions
+
+Name        | Example | Example result | Description
+----------- | ------- | -------------- | -----------
+md5         | `(md5 "test")` | `"098f6b..."` | Calculate the MD5 hash of a string.
+sha1        | `(sha1 "test")` | `"a94a8f..."` | Calculate the SHA1 hash of a string.
+pw-hash     | `(pw-hash "test")` | `"$2y$10$..."` | Calculate the hash for a password using [password_hash](https://www.php.net/manual/en/function.password-hash.php).
+pw-verify   | `(pw-verify "test" "hash")` | `false` | Verify a password hash using [password_verify](https://www.php.net/manual/en/function.password-verify.php).
 
 ## Database functions
 
@@ -87,6 +97,21 @@ db-last-id  | `(db-last-id d)` | `"1"` | Return the last id of auto-increment co
 db-trans    | `(db-trans d)` | `true` | Start a transaction.
 db-commit   | `(db-commit d)` | `true` | Commit a transaction.
 db-rollback | `(db-rollback d)` | `true` | Roll back a transaction.
+
+## Encoding and decoding functions
+
+All of these functions take a single string as argument.
+
+Name        | Description
+----------- | -----------
+bin2hex | Convert binary data to hexadecimal representation.
+hex2bin | Decode a hexadecimally encoded binary string.
+to-base64 | Encode binary data to Base64 representation.
+from-base64 | Decode a Base64 encoded binary string.
+url-encode | Encode special characters in URL.
+url-decode | Decode special characters in URL.
+utf8-encode | Encode ISO-8859-1 string to UTF-8.
+utf8-decode | Decode UTF-8 string to ISO-8859-1.
 
 ## Http functions
 
@@ -105,6 +130,16 @@ Name    | Example | Example result | Description
 wd      | `(wd)` | `"/home/user/madlisp/"` | Get the current working directory.
 chdir   | `(chdir "/tmp")` | `true` | Change the current working directory.
 file?   | `(file? "test.txt")` | `true` | Return true if the file exists.
+dir?    | `(dir? "test.txt")` | `false` | Return true if directory exists and is not a file.
+fsize   | `(fsize "test.txt")` | `4` | Return the size of a file in bytes.
+ftime   | `(ftime "test.txt")` | `1608539455` | Return the modification time of a file as Unix timestamp.
+ftouch  | `(ftouch "test.txt")` | `true` | Update the modification time of a file.
+fperms  | `(fperms "test.txt")` | `"0644"` | Get the file permissions of a file.
+fmod    | `(fmod "test.txt" "0666")` | `true` | Set the file permissions of a file.
+fown    | `(fown "test.txt")` | `"user"` | Get the owner of a file.
+fgrp    | `(fgrp "test.txt")` | `"group"` | Get the group of a file.
+fcache  | `(fcache)` | `null` | Clear the cache of file information (permissions, modification time, size) using [clearstatcache](https://www.php.net/manual/en/function.clearstatcache.php).
+fdel    | `(fdel "test.txt")` | `true` | Delete a file.
 fget    | `(fget "test.txt")` | `"content"` | Read the contents of a file using [file_get_contents](https://www.php.net/manual/en/function.file-get-contents.php).
 fput    | `(fput "test.txt" "content")` | `true` | Write string to file using [file_put_contents](https://www.php.net/manual/en/function.file-put-contents.php). Give optional third parameter as `true` to append.
 fopen   | `(def f (fopen "test.txt" "w"))` | `<resource>` | Open a file for reading or writing. Give the mode as second argument.
@@ -113,6 +148,13 @@ fwrite  | `(fwrite f "abc")` | `3` | Write to a file resource.
 fflush  | `(fflush f)` | `true` | Persist buffered writes to disk for a file resource.
 fread   | `(fread f 16)` | `"abc"` | Read from a file resource.
 feof?   | `(feof? f)` | `true` | Return true if end of file has been reached for a file resource.
+glob    | `(glob "src/*.php")` | `["src/a.php" "src/b.php"]` | Find all files matching the given pattern.
+read-dir | `(read-dir "txt")` | `["." ".." "a.txt" "b.txt"]` | List all files from a directory.
+
+The following functions are available if the [readline](https://www.php.net/manual/en/book.readline.php) extension is loaded:
+
+Name    | Example | Example result | Description
+------- | ------- | -------------- | -----------
 readline | `(readline "What is your name? ")` | `What is your name? ` | Read line of user input using [readline](https://www.php.net/manual/en/function.readline.php).
 readline-add | `(readline-add "What is your name? ")` | `true` | Add line of user input to readline history using [readline_add_history](https://www.php.net/manual/en/function.readline-add-history.php).
 readline-load | `(readline-load "historyfile")` | `true` | Read readline history from file using [readline_read_history](https://www.php.net/manual/en/function.readline-read-history.php).
@@ -129,12 +171,12 @@ from-json | `(from-json "{\"a\":[1,2,3],\"b\":[4,5,6]}")` | `{"a":[1 2 3] "b":[4
 
 Name    | Example | Example result | Description
 ------- | ------- | -------------- | -----------
-`+`   | `(+ 1 2 3)` | `6` | Return the sum of the arguments.
-`-`   | `(- 4 2 1)` | `1` | Subtract the other arguments from the first.
-`*`   | `(* 2 3 4)` | `24` | Multiply the arguments.
-`/`   | `(/ 7 2)` | `3.5` | Divide the arguments.
-`//`  | `(// 7 2)` | `3` | Divide the arguments using integer division.
-`%`   | `(% 6 4)` | `2` | Calculate the modulo.
+\+    | `(+ 1 2 3)` | `6` | Return the sum of the arguments.
+\-    | `(- 4 2 1)` | `1` | Subtract the other arguments from the first.
+\*    | `(* 2 3 4)` | `24` | Multiply the arguments.
+/     | `(/ 7 2)` | `3.5` | Divide the arguments.
+//    | `(// 7 2)` | `3` | Divide the arguments using integer division.
+%     | `(% 6 4)` | `2` | Calculate the modulo.
 inc   | `(inc 1)` | `2` | Increment the argument by one.
 dec   | `(dec 2)` | `1` | Decrement the argument by one.
 sin   | `(sin 1)` | `0.84` | Calculate the sine.
@@ -148,6 +190,7 @@ sqrt  | `(sqrt 2)` | `1.41` | Calculate the square root.
 rand  | `(rand 5 10)` | `8` | Return a random integer between given min and max values.
 randf | `(randf)` | `0.678` | Return a random float between 0 (inclusive) and 1 (exclusive).
 rand-seed | `(rand-seed 256)` | `256` | Seed the random number generator with the given value.
+rand-bytes | `(rand-bytes 4)` | `"abcd"` | Get random binary data of the given length.
 
 ## Regular expression functions
 
@@ -165,9 +208,14 @@ Name    | Example | Example result | Description
 ------- | ------- | -------------- | -----------
 empty?  | `(empty? "")` | `true` | Return true if argument is empty string.
 len     | `(len "hello world")` | `11` | Return the length of a string using [strlen](https://www.php.net/manual/en/function.strlen.php).
+reverse | `(reverse "hello world")` | `"dlrow olleh"` | Reverse the characters of a string using [strrev](https://www.php.net/manual/en/function.strrev.php).
 trim    | `(trim " abc ")` | `"abc"` | Trim the string using [trim](https://www.php.net/manual/en/function.trim).
+ltrim   | `(ltrim " abc ")` | `"abc "` | Trim the beginning of string using [ltrim](https://www.php.net/manual/en/function.ltrim).
+rtrim    | `(rtrim " abc ")` | `" abc"` | Trim the end of string using [rtrim](https://www.php.net/manual/en/function.rtrim).
 upcase  | `(upcase "abc")` | `"ABC"` | Make the string upper case using [strtoupper](https://www.php.net/manual/en/function.strtoupper).
 lowcase | `(lowcase "Abc")` | `"abc"` | Make the string lower case using [strtolower](https://www.php.net/manual/en/function.strtolower.php).
+strpos  | `(strpos "hello world" "llo")` | `2` | Return the index of the second string in the first string, or false if not found, using [strpos](https://www.php.net/manual/en/function.strpos.php).
+stripos | `(stripos "hello world" "LLO")` | `2` | Case-insensitive version of `strpos`.
 substr  | `(substr "hello world" 3 5)` | `"lo wo"` | Get a substring using [substr](https://www.php.net/manual/en/function.substr.php).
 replace | `(replace "hello world" "hello" "bye")` | `"bye world"` | Replace substrings using [str_replace](https://www.php.net/manual/en/function.str-replace.php).
 split   | `(split "-" "a-b-c")` | `["a" "b" "c"]` | Split string using [explode](https://www.php.net/manual/en/function.explode.php).
@@ -175,8 +223,21 @@ join    | `(join "-" "a" "b" "c")` | `"a-b-c"` | Join string together using [imp
 format  | `(format "%d %.2f" 56 4.5)` | `"56 4.50"` | Format string using [sprintf](https://www.php.net/manual/en/function.sprintf.php).
 prefix? | `(prefix? "hello world" "hello")` | `true` | Return true if the first argument starts with the second argument.
 suffix? | `(suffix? "hello world" "world")` | `true` | Return true if the first argument ends with the second argument.
+strcmp | | | Compare two strings using [strcmp](https://www.php.net/manual/en/function.strcmp.php).
+strcasecmp | | | Compare two strings using [strcasecmp](https://www.php.net/manual/en/function.strcasecmp.php).
+strnatcmp | | | Compare two strings using [strnatcmp](https://www.php.net/manual/en/function.strnatcmp.php).
+strnatcasecmp | | | Compare two strings using [strnatcasecmp](https://www.php.net/manual/en/function.strnatcasecmp.php).
 
-Note that support for multibyte characters in strings is limited because the provided functions do not use the [mbstring](https://www.php.net/manual/en/book.mbstring.php) extension.
+The following functions are available if the [mbstring](https://www.php.net/manual/en/book.mbstring.php) extension is loaded:
+
+Name       | Description
+---------- | -----------
+mb-len     | Return the length of a multibyte string in characters.
+mb-upcase  | Multibyte version of `upcase`.
+mb-lowcase | Multibyte version of `lowcase`.
+mb-strpos  | Multibyte version of `strpos`.
+mb-stripos | Multibyte version of `stripos`.
+mb-substr  | Multibyte version of `substr`.
 
 ## Time functions
 
