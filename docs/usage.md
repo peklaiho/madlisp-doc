@@ -28,17 +28,19 @@ A file containing MadLisp code can be evaluated by simply giving it as argument:
 $ madlisp file.mad
 ```
 
+For convenience when evaluating simple snippets, the `-p` option can be used to print out the result.
+
 Code to be evaluated can be given as an argument with the `-e` option:
 
 ```text
-$ madlisp -e "(+ 1 2 3)"
+$ madlisp -p -e "(+ 1 2 3)"
 6
 ```
 
 With no arguments, the interpreter will read input from stdin. This can be used with pipes:
 
 ```text
-$ echo "(+ 1 2 3)" | madlisp
+$ echo "(+ 1 2 3)" | madlisp -p
 6
 ```
 
@@ -58,7 +60,7 @@ Command line arguments can be passed to the Lisp environment by separating them 
 To demonstrate, we can create a file that just returns the arguments and then evaluate it.
 
 ```text
-$ echo "argv" > test.mad
+$ echo "(print argv)" > test.mad
 $ madlisp test.mad -- abc efg 123
 [abc efg 123]
 ```
@@ -70,8 +72,8 @@ A shell script can be set to be evaluated using MadLisp with the [Shebang](https
 For example, if we create a file `myexec` where the first line contains `#!` followed by the full path to the `madlisp` executable:
 
 ```text
-#!/home/user/mylisp/vendor/bin/madlisp
-(+ 1 2 3)
+#!/usr/bin/env madlisp
+(print (+ 1 2 3))
 ```
 
 Then we can make the script executable using chmod and invoke it directly:
