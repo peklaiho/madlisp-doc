@@ -91,7 +91,7 @@ This is a simple wrapper for [PDO](https://www.php.net/manual/en/book.pdo.php). 
 Name        | Example | Example result | Description
 ----------- | ------- | -------------- | -----------
 db-open     | `(def d (db-open "mysql:host=localhost;dbname=test" "testuser" "testpw"))` | `<object<PDO>>` | Open a database connection.
-db-execute  | `(db-execute d "INSERT INTO test_table (col1, col2) values (?, ?)" [1, 2])` | `1` | Execute a SQL statement and return the number of affected rows.
+db-execute  | `(db-execute d "INSERT INTO test_table (col1, col2) values (?, ?)" [1 2])` | `1` | Execute a SQL statement and return the number of affected rows.
 db-query    | `(db-query d "SELECT * FROM test_table WHERE col1 = ?" [1])` | | Execute a SELECT statement.
 db-last-id  | `(db-last-id d)` | `"1"` | Return the last id of auto-increment column.
 db-trans    | `(db-trans d)` | `true` | Start a transaction.
@@ -185,6 +185,10 @@ tan   | `(tan 1)` | `1.55` | Calculate the tangent.
 abs   | `(abs -2)` | `2` | Get the absolute value.
 floor | `(floor 2.5)` | `2` | Get the next lowest integer.
 ceil  | `(ceil 2.5)` | `3` | Get the next highest integer.
+max   | `(max 3 6 4)` | `6` | Return the largest value.
+max   | `(max [3 6 4])` | `6` | Max can also be used with a sequence.
+min   | `(min 4 2 5)` | `2` | Return the smallest value.
+min   | `(min [4 2 5])` | `2` | Min can also be used with a sequence.
 pow   | `(pow 2 4)` | `16` | Raise the first argument to the power of the second argument.
 sqrt  | `(sqrt 2)` | `1.41` | Calculate the square root.
 rand  | `(rand 5 10)` | `8` | Return a random integer between given min and max values.
