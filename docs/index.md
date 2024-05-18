@@ -28,8 +28,8 @@ The project requires PHP 7.4 or newer and [Composer](https://getcomposer.org/).
 
 ## Code
 
-The [repository](https://bitbucket.org/maddy83/madlisp/) is hosted on Bitbucket.
+The [repository](https://github.com/peklaiho/madlisp) is hosted on GitHub.
 
 ## License
 
-MadLisp is licensed under the [MIT](https://bitbucket.org/maddy83/madlisp/src/master/LICENSE) license.
+MadLisp is licensed under the MIT license.

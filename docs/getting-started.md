@@ -11,7 +11,7 @@ Create a new directory and require the project using composer:
 ```text
 $ mkdir mylisp
 $ cd mylisp
-$ composer require maddy83/madlisp
+$ composer require peklaiho/madlisp
 ```
 
 Use the `vendor/bin/madlisp` executable to start the interpreter. Start the REPL with the `-r` option:
